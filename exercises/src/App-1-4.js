@@ -83,34 +83,34 @@ function App() {
       container 
       spacing = {1}
       direction = 'row' 
-      justify = 'center'
+      justify = 'flex-center'
       style = {{width: '50%', margin: 'auto'}}
     >
       <Grid container
         spacing = {1} 
       >
         <Grid container direction = 'row'>
-          <Grid item xs>
+          <Grid item  xs = {2}>
           </Grid>
-          <Grid item xs>
+          <Grid item  xs = {2}>
             <h3>Mouse</h3>
           </Grid>
-          <Grid item xs>
+          <Grid item  xs = {2}>
             <h3>Wheel</h3>
           </Grid>
         </Grid>
         <Grid container>
-          <Grid item xs>
+          <Grid item  xs = {2}>
             <h3>Distance</h3>
           </Grid>
-          <Grid item xs>
+          <Grid item  xs = {2}>
             <Checkbox
               checked = {mousedist}
               onChange = {handleChange}
               name = 'mousedist'
             />
           </Grid>
-          <Grid item xs>
+          <Grid item  xs = {2}>
             <Checkbox 
               checked = {wheeldist}
               onChange = {handleChange}
@@ -119,17 +119,17 @@ function App() {
           </Grid>
         </Grid>
         <Grid container>
-          <Grid item xs>
+          <Grid item  xs = {2}>
             <h3>Speed</h3>
           </Grid>
-          <Grid item xs>
+          <Grid item xs = {2}>
             <Checkbox
               checked = {mousespeed}
               onChange = {handleSpeedChange}
               name = 'mousespeed'
             />
           </Grid>
-          <Grid item xs>
+          <Grid item xs = {2}>
             <Checkbox 
               checked = {wheelspeed}
               onChange = {handleSpeedChange}
@@ -137,12 +137,12 @@ function App() {
             />
           </Grid>
         </Grid>
-        <Grid container xs
+        <Grid container xs = {6}
           align = "center"
         >
           <p>
             The mouse has moved {trackedMouseDist} units with the speed of {trackedMouseSpeed} units/second. <br />
-            The scroll wheel has moved {trackedWheelDist} units with the speed of {trackedWheelSpeed} units/second.
+            The scroll wheel has moved {trackedWheelDist} units with the speed of {trackedWheelSpeed} units/second. <br />
             <Button 
               variant = 'outlined'
               color = 'primary'
@@ -153,15 +153,15 @@ function App() {
           </p>
         </Grid>
       </Grid>
-      <Grid container
+      <Grid container xs = {6}
         spacing = {1}
       >
         <Paper
           elevation = {1}
-          style = {{width: '100%', minWidth: 400, minHeight: 300, margin: 'auto'}}
+          style = {{width: '100%', minHeight: 300, margin: 'auto'}}
         >
           <div
-            style = {{width: '100%', minWidth: 400, minHeight: 300, margin: 'auto'}}
+            style = {{width: '100%', minHeight: 300, margin: 'auto'}}
             onMouseMove = {speed.mousespeed ? trackMouseSpeed : dist.mousedist ? trackMouseDist : null}
             onWheel = {speed.wheelspeed ? trackWheelSpeed : dist.wheeldist ? trackWheelDist : null}
           >
