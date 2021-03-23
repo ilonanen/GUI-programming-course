@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import './App.css'
 import { useState } from 'react'
@@ -21,68 +21,81 @@ const useStyles = makeStyles(theme => ({
     padding: 10
   },
   formControl: {
-    margin: theme.spacing(3),
-    align: "left"
+    padding: theme.spacing(3),
+    marginLeft: theme.spacing(2),
+    justifyContent: "flex-start"
   }
   
 }))
 
 function App() {
 
+  const [colours, setColours] = useState(["text.primary",
+  "secondary.main",
+  "warning.main",
+  "info.main",
+  "error.main",
+  "success.main"]
+  )
+  const [boxes, setBoxes] = useState([])
   const [selected, setSelected] = useState(null)
-  const [newColour, setNewColour] = useState("")
+  const [newboxcolor, setNewboxcolor] = useState("text.primary")
   const [spacing, setSpacing] = useState(2)
 	const [anchorEl, setAnchorEl] = useState(null)
   const [anchorElColors, setAnchorElColors] = useState(false)
   const [addDialogOpen, setAddDialogOpen] = useState(false)
   const [spacingDialogOpen, setSpacingDialogOpen] = useState(false)
+  
 
-  var colours = ["text.primary",
-    "warning.main",
-    "secondary.main",
-    "error.main",
-    "info.main",
-    "success.main"]
 
-  const rectangles = []
 
-  const selectBox = (id) => {
-    selected === id ? 
-    setSelected(null) :
-    setSelected(id)
-  }
+  useEffect(() => {
+    var rectangles = []
+    const handler = (event) => {
+      selected === parseInt(event.target.id) ? 
+      setSelected(null) :
+      setSelected(parseInt(event.target.id))
+    }
+    for (let i = 0; i < colours.length; i++) {
+      rectangles.push(
+        <Box 
+          id = {i} 
+          bgcolor = {colours[i]} 
+          variant = "contained" 
+          borderColor = "white"
+          border = {selected === i ? 2 : 0}
+          boxShadow = {selected === i ? 0 : 4} 
+          onClick = {handler} 
+          p = {3}
+          />
+      )
+    }
+    setBoxes(rectangles)
+  }, [colours, selected, setSelected])
+
+
 
   const changeColour = (colour) => {
-    setNewColour(colour)
-    colours[selected] = newColour
-  
+    var tempcolours = colours
+    tempcolours[selected] = colour
+    setColours([...tempcolours])
     setAnchorElColors(null)
     setAnchorEl(null)
   }
 
-  const addNewBox = (event) => {
-    setNewColour(event.target.value)
-    colours.push(newColour)
-    var i = rectangles.length
-    rectangles.push(
-      <Box 
-        accessKey = {i} 
-        bgcolor = {colours[i]} 
-        variant = "contained" 
-        borderColor = "white"
-        border = {selected === i ? 2 : 0}
-        boxShadow = {selected === i ? 0 : 4} 
-        onClick = {handler} 
-        p = {3}
-      />
-    )
-    console.log(rectangles)
-    closeAddDialog(event)
+  const setNewBoxColour = (event) => {
+    setNewboxcolor(event.target.value)
+    // console.log(newboxcolor)
   }
 
-  const handler = (event) => {
-    selectBox(parseInt(event.target.accessKey))
+  const addNewBox = (event) => {
+    var tempcolours = colours
+    tempcolours.push(newboxcolor)
+    setColours([...tempcolours])
+    closeAddDialog(event)
+    setNewboxcolor("text.primary")
   }
+
 
   const openMenu = (event) => {
     setAnchorEl(event.currentTarget)
@@ -115,7 +128,7 @@ function App() {
   }
 
   const setNewSpacing = (event, newSpacing) => {
-    console.log(newSpacing)
+    // console.log(newSpacing)
     setSpacing(newSpacing)
   }
 
@@ -128,32 +141,14 @@ function App() {
     setAddDialogOpen(false)
   }
 
-// nämä pitää siirtää stateen, jotta päivittyvät.
-// Attribuutit props-objectissa
-// 0:
-// $$typeof: Symbol(react.element)
-// key: null
-// props:
-// accessKey: 0
-// bgcolor: "text.primary"
-// border: 0
-// borderColor: "white"
-// boxShadow: 4
+  const deleteBox = (event) => {
+    var tempcolours = colours
+    tempcolours.splice(selected, 1)
+    setColours([...tempcolours])
+    closeMenu(event)
+    setSelected(null)
+  }
 
-  for (let i = 0; i < 6; i++) {
-		rectangles.push(
-      <Box 
-        accessKey = {i} 
-        bgcolor = {colours[i]} 
-        variant = "contained" 
-        borderColor = "white"
-        border = {selected === i ? 2 : 0}
-        boxShadow = {selected === i ? 0 : 4} 
-        onClick = {handler} 
-        p = {3}
-        />
-    )
-	}
 
   const styledClasses = useStyles()
 
@@ -187,7 +182,7 @@ function App() {
                 <MenuItem disabled = {selected === null} onClick = {openEditMenu}>Edit box colour</MenuItem>
                 <MenuItem onClick = {openSpacingDialog}>Adjust spacing</MenuItem>
                 <MenuItem onClick = {openAddDialog}>Add box</MenuItem>
-                <MenuItem>Delete box</MenuItem>
+                <MenuItem disabled = {selected === null} onClick = {deleteBox}>Delete box</MenuItem>
               </Menu>
               <Menu
                 id = "menu-colours"
@@ -207,6 +202,10 @@ function App() {
                   <MenuItem name = "primary.main" onClick = {(e) => changeColour("primary.main")}><Box color = "primary.main">Blue</Box></MenuItem>
                   <MenuItem name = "secondary.main" onClick = {(e) => changeColour("secondary.main")}><Box color = "secondary.main">Red</Box></MenuItem>
                   <MenuItem name = "success.main" onClick = {(e) => changeColour("success.main")}><Box color = "success.main">Green</Box></MenuItem>
+                  <MenuItem name = "warning.main" onClick = {(e) => changeColour("warning.main")}><Box color = "warning.main">Yellow</Box></MenuItem>
+                  <MenuItem name = "info.main" onClick = {(e) => changeColour("info.main")}><Box color = "info.main">Light blue</Box></MenuItem>
+                  <MenuItem name = "text.primary" onClick = {(e) => changeColour("text.primary")}><Box color = "text.primary">Black</Box></MenuItem>
+
               </Menu>
               <h2>Box box box</h2>
           </Toolbar>
@@ -215,18 +214,16 @@ function App() {
       <div>
         <Box className = {styledClasses.bgBox}>
           <Grid container spacing = {spacing} justify = "flex-start">
-            {rectangles.map((rectangle, i) => (
-              <Grid key = {i} item lg = {2} md = {4} sm = {6}>
-                {rectangle}
-              </Grid>
-            ))}
+            <DisplayBoxes boxes = {boxes} />
           </Grid>	
         </Box>
       </div>
       <div>
         <Dialog
           open = {spacingDialogOpen}
-          onClose = {closeSpacingDialog}>
+          onClose = {closeSpacingDialog}
+          fullWidth
+          padding = {3}>
             <DialogTitle>Set Spacing</DialogTitle>
             <DialogActions>
               <Slider
@@ -242,12 +239,13 @@ function App() {
         </Dialog>
         <Dialog
           open = {addDialogOpen}
-          onClose = {closeAddDialog}  
+          onClose = {closeAddDialog}
+          
         >
           <DialogTitle>Add a new rectangle</DialogTitle>
-          <DialogActions>
-            <FormControl className = {styledClasses.formControl}>
-              <RadioGroup name = "newboxcolor" defaultValue = "text.primary">
+          <DialogActions className = {styledClasses.formControl}>
+            <FormControl>
+              <RadioGroup name = "newboxcolor" defaultValue = "text.primary" onChange = {setNewBoxColour}>
                 <FormControlLabel
                   value = "text.primary"
                   control = {<Radio color = "default" />}
@@ -263,7 +261,18 @@ function App() {
                   control = {<Radio color = "primary" />}
                   label = "Blue"
                   />
+                <FormControlLabel
+                  value = "success.main"
+                  control = {<Radio color = "default" />}
+                  label = "Green"
+                  />
+                <FormControlLabel
+                  value = "warning.main"
+                  control = {<Radio color = "default" />}
+                  label = "Yellow"
+                  />
               </RadioGroup>
+              <br />
               <Button color = "primary" variant = "outlined" onClick = {addNewBox}>Add new</Button>
               <Button color = "secondary" variant = "outlined" onClick = {closeAddDialog}>Cancel</Button>
             </FormControl>
@@ -271,6 +280,16 @@ function App() {
         </Dialog>
       </div>
     </div>
+  )
+}
+
+function DisplayBoxes({boxes}) {
+  return (
+    boxes.map((box, i) => (
+      <Grid key = {i} item lg = {2} md = {4} sm = {6}>
+        {box}
+      </Grid>
+    ))
   )
 }
 
